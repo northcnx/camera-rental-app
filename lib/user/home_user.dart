@@ -11,11 +11,25 @@
 //     );
 //   }
 // }
+//สิ่งที่ต้องใช้ใน SQL (LIKE)
+//SELECT * FROM products 
+//WHERE name LIKE '%Sony%' 
+//OR details LIKE '%Sony%';
+
 import 'package:flutter/material.dart';
 import 'notifications_user.dart';
 import 'Category_user.dart';
-class HomeUser extends StatelessWidget {
+
+class HomeUser extends StatefulWidget {
   const HomeUser({super.key});
+
+  @override
+  State<HomeUser> createState() => _HomeUserState();
+}
+
+class _HomeUserState extends State<HomeUser> {
+  // เพิ่มส่วนนี้เพื่อรับค่าจากช่องค้นหา
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +42,7 @@ class HomeUser extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ===== Search Bar =====
+              // ===== Search Bar (แก้ไขให้พิมพ์ได้จริง) =====
               Container(
                 height: 44,
                 padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -37,13 +51,31 @@ class HomeUser extends StatelessWidget {
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Row(
-                  children: const [
-                    Icon(Icons.search, color: Colors.black54),
-                    SizedBox(width: 8),
+                  children: [
+                    const Icon(Icons.search, color: Colors.black54),
+                    const SizedBox(width: 8),
                     Expanded(
-                      child: Text(
-                        "ค้นหากล้อง / เลนส์ / อุปกรณ์",
-                        style: TextStyle(color: Colors.black45, fontSize: 13),
+                      child: TextField(
+                        controller: _searchController,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 13,
+                        ),
+                        decoration: const InputDecoration(
+                          hintText: "ค้นหากล้อง / เลนส์ / อุปกรณ์",
+                          hintStyle: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 13,
+                          ),
+                          border: InputBorder.none,
+                          isDense: true,
+                        ),
+                        onSubmitted: (value) {
+                          // ส่วนที่เอาไว้ทดสอบกับ SQL LIKE ใน Postman
+                          print(
+                            "SQL Query: SELECT * FROM products WHERE name LIKE '%$value%'",
+                          );
+                        },
                       ),
                     ),
                   ],
@@ -51,7 +83,7 @@ class HomeUser extends StatelessWidget {
               ),
               const SizedBox(height: 12),
 
-              // ===== Banner =====
+              // ===== Banner (รูปแบบเดิม) =====
               ClipRRect(
                 borderRadius: BorderRadius.circular(14),
                 child: Container(
@@ -67,7 +99,6 @@ class HomeUser extends StatelessWidget {
                   ),
                   child: Stack(
                     children: [
-                      // Overlay ดำ
                       Positioned.fill(
                         child: DecoratedBox(
                           decoration: BoxDecoration(
@@ -82,8 +113,6 @@ class HomeUser extends StatelessWidget {
                           ),
                         ),
                       ),
-
-                      // ✅ ปุ่มแจ้งเตือน (กดแล้วไปหน้า Notifications)
                       Positioned(
                         top: 10,
                         right: 10,
@@ -92,7 +121,6 @@ class HomeUser extends StatelessWidget {
                           child: InkWell(
                             borderRadius: BorderRadius.circular(999),
                             onTap: () {
-                              debugPrint("กดกระดิ่งแล้ว ✅");
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -116,7 +144,6 @@ class HomeUser extends StatelessWidget {
                           ),
                         ),
                       ),
-
                       const Positioned(
                         left: 12,
                         bottom: 12,
@@ -136,7 +163,7 @@ class HomeUser extends StatelessWidget {
               ),
               const SizedBox(height: 14),
 
-              // ===== Section: Category =====
+              // ===== Section: Category (รูปแบบเดิม) =====
               const Center(
                 child: Text(
                   "ประเภท",
@@ -148,7 +175,6 @@ class HomeUser extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-
               SizedBox(
                 height: 110,
                 child: ListView(
@@ -158,17 +184,17 @@ class HomeUser extends StatelessWidget {
                     _CategoryCard(
                       title: "Digital Camera",
                       imageUrl:
-                          "https://images.unsplash.com/photo-1516724562728-afc824a36e84?auto=format&fit=crop&w=800&q=60",
+                          "https://images.unsplash.com/photo-1516724562728-afc824a36e84?w=400",
                     ),
                     _CategoryCard(
-                      title: "Digital Camera",
+                      title: "Mirrorless",
                       imageUrl:
-                          "https://images.unsplash.com/photo-1519181245277-cffeb31da2fb?auto=format&fit=crop&w=800&q=60",
+                          "https://images.unsplash.com/photo-1519181245277-cffeb31da2fb?w=400",
                     ),
                     _CategoryCard(
-                      title: "Digital Camera",
+                      title: "Action Cam",
                       imageUrl:
-                          "https://images.unsplash.com/photo-1519183071298-a2962eade1c3?auto=format&fit=crop&w=800&q=60",
+                          "https://images.unsplash.com/photo-1519183071298-a2962eade1c3?w=400",
                     ),
                   ],
                 ),
@@ -176,7 +202,7 @@ class HomeUser extends StatelessWidget {
 
               const SizedBox(height: 14),
 
-              // ===== Section: Recommended =====
+              // ===== Section: Recommended (รูปแบบเดิม) =====
               const Center(
                 child: Text(
                   "แนะนำ",
@@ -195,7 +221,7 @@ class HomeUser extends StatelessWidget {
                 details:
                     "คุณสมบัติ:\n- ความละเอียด 1.0 ล้านพิกเซล\n- เหมาะสำหรับถ่ายภาพและวิดีโอ\n- กันสั่นดีเยี่ยม เหมาะกับการถ่ายมือ",
                 imageUrl:
-                    "https://images.unsplash.com/photo-1519183071298-a2962eade1c3?auto=format&fit=crop&w=900&q=60",
+                    "https://images.unsplash.com/photo-1519183071298-a2962eade1c3?w=900",
               ),
 
               const SizedBox(height: 120),
@@ -207,15 +233,12 @@ class HomeUser extends StatelessWidget {
   }
 }
 
-// ---------- Category Card ----------
+// ---------- _CategoryCard (คงเดิม) ----------
 class _CategoryCard extends StatelessWidget {
   final String title;
   final String imageUrl;
 
-  const _CategoryCard({
-    required this.title,
-    required this.imageUrl,
-  });
+  const _CategoryCard({required this.title, required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -276,7 +299,7 @@ class _CategoryCard extends StatelessWidget {
   }
 }
 
-// ---------- Recommended Card ----------
+// ---------- _RecommendedCard ----------
 class _RecommendedCard extends StatelessWidget {
   final String name;
   final String details;
@@ -354,7 +377,7 @@ class _RecommendedCard extends StatelessWidget {
                       fontSize: 14,
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
